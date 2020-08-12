@@ -71,7 +71,7 @@ public class Customer {
 
     //connect customers to orders table in a one to many relation
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = "customers")
+    @JsonIgnoreProperties(value = "customer")
     private List<Order> orders = new ArrayList<>();
 
 

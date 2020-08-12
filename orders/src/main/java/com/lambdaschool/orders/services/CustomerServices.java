@@ -23,4 +23,6 @@ public interface CustomerServices {
 
     //dim method to update a customer selected by an id
     Customer update(Customer customer, long id);
+
+    void delete(long id);
 }

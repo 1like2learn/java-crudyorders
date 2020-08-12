@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -78,6 +77,16 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/customer/{custcode}", consumes = "application/json")
+    public ResponseEntity<?> updateFullCustomer(@Valid @RequestBody Customer updateCustomer,
+                                                @PathVariable long custcode){
+
+        updateCustomer.setCustcode(custcode);
+        customerservices.save(updateCustomer);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "/customer/{custcode}", consumes = "application/json")
     public ResponseEntity<?> updateCustomer(@RequestBody Customer updateCustomer,
                                             @PathVariable long custcode){
 
@@ -86,4 +95,11 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/customer/{custcode}")
+    public ResponseEntity<?> delecteCustomerById(@PathVariable long custcode){
+
+        customerservices.delete(custcode);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
