@@ -33,7 +33,7 @@ public class Customer {
     private long custcode;
 
     //dim name
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String custname;
 
     //dim city

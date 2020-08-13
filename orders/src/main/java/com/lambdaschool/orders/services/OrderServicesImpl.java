@@ -2,7 +2,10 @@ package com.lambdaschool.orders.services;
 
 import com.lambdaschool.orders.models.Customer;
 import com.lambdaschool.orders.models.Order;
+import com.lambdaschool.orders.models.Payment;
+import com.lambdaschool.orders.repositories.CustomerRepo;
 import com.lambdaschool.orders.repositories.OrderRepo;
+import com.lambdaschool.orders.repositories.PaymentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,12 @@ public class OrderServicesImpl implements OrderServices {
 
     @Autowired
     OrderRepo orderrepo;
+
+    @Autowired
+    PaymentRepo paymentrepo;
+
+    @Autowired
+    CustomerRepo customerrepo;
 
     @Override
     public Order findOrderById(Long orderid) {
@@ -34,7 +43,46 @@ public class OrderServicesImpl implements OrderServices {
     @Transactional
     @Override
     public Order save(Order order){
-        return orderrepo.save(order);
+
+        Order newOrder = new Order();
+
+        if(order.getOrdnum() != 0){
+
+            orderrepo.findById(order.getOrdnum())
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "Order " + order.getOrdnum() + " Not Found."));
+
+            newOrder.setOrdnum(order.getOrdnum());
+        }
+
+        newOrder.setOrdamount(order.getOrdamount());
+        newOrder.setAdvanceamount(order.getAdvanceamount());
+        newOrder.setOrderdescription(order.getOrderdescription());
+        newOrder.setCustomer(customerrepo.findById(order.getCustomer()
+            .getCustcode())
+        .orElseThrow(() -> new EntityNotFoundException(
+            "Customer " + order.getCustomer().getCustcode() + " Not Found.")));
+
+        newOrder.getPayments().clear();
+
+        for(Payment p: order.getPayments()){
+
+            Payment newPay = paymentrepo.findById(p.getPaymentid())
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "Payment " + p.getPaymentid() + " Not Found."));
+
+            newOrder.getPayments().add(newPay);
+        }
+        return orderrepo.save(newOrder);
     }
 
+    @Transactional
+    @Override
+    public void delete(long id) {
+
+        orderrepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
+            "Order " + id + " Not Found."
+        ));
+        orderrepo.deleteById(id);
+    }
 }

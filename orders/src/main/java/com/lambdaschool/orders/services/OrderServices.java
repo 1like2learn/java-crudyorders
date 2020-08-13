@@ -11,4 +11,6 @@ public interface OrderServices {
     public Order findOrderById(Long custid);
 
     public List<Order> findAllOrders();
+
+    void delete(long id);
 }

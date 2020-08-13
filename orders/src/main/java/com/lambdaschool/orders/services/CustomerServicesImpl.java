@@ -92,6 +92,7 @@ public class CustomerServicesImpl implements CustomerServices {
             newOrder.setOrdamount(o.getOrdamount());
             newOrder.setAdvanceamount(o.getAdvanceamount());
             newOrder.setOrderdescription(o.getOrderdescription());
+            newOrder.setCustomer(newCustomer);
 
             //set order payments to clear
             //loop through provided orders
@@ -210,7 +211,8 @@ public class CustomerServicesImpl implements CustomerServices {
     public void delete(long id) {
 
         customerrepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
-            "Restaurant " + id + " Not Found."
+            "Customer " + id + " Not Found."
         ));
+        customerrepo.deleteById(id);
     }
 }
